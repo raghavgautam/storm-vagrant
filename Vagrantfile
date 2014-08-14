@@ -1,73 +1,69 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
-
+require 'uri'
 # Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
 VAGRANTFILE_API_VERSION = "2"
-STORM_VERSION = "storm-0.9.1-incubating-SNAPSHOT"
-STORM_ARCHIVE = "#{STORM_VERSION}.zip"
+STORM_BOX_TYPE = "hashicorp/precise64"
+STORM_DIST_URL = "http://apache.cs.utah.edu/incubator/storm/apache-storm-0.9.2-incubating/apache-storm-0.9.3-incubating-SNAPSHOT.zip"
+STORM_ARCHIVE = File.basename(URI.parse(STORM_DIST_URL).path)
+STORM_VERSION = File.basename(STORM_ARCHIVE, '.*')
+STORM_SUPERVISOR_COUNT = 2
+
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-  
-  config.hostmanager.manage_host = true
-  config.hostmanager.enabled = true
-  
+
+  config.vm.box = STORM_BOX_TYPE
+  #config.hostmanager.manage_host = true
+  #config.hostmanager.enabled = true
+
   if(!File.exist?(STORM_ARCHIVE))
-    `wget -N https://dl.dropboxusercontent.com/s/dj86w8ojecgsam7/storm-0.9.0.1.zip`
+    `wget -N #{STORM_DIST_URL}`
   end
-  
+
   config.vm.define "zookeeper" do |zookeeper|
-    zookeeper.vm.box = "precise32"
+    zookeeper.vm.provider "virtualbox" do |v|
+      v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+    end
     zookeeper.vm.network "private_network", ip: "192.168.50.3"
+    zookeeper.vm.provision :shell, :inline => "sudo ln -fs /vagrant/etc-hosts /etc/hosts"
     zookeeper.vm.hostname = "zookeeper"
+    zookeeper.vm.provision "shell", inline: "apt-get update"
     zookeeper.vm.provision "shell", path: "install-zookeeper.sh"
+
   end
 
   config.vm.define "nimbus" do |nimbus|
-    nimbus.vm.box = "precise32"
+    nimbus.vm.provider "virtualbox" do |v|
+      v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+    end
     nimbus.vm.network "private_network", ip: "192.168.50.4"
     nimbus.vm.hostname = "nimbus"
-    
+    nimbus.vm.provision :shell, :inline => "sudo ln -fs /vagrant/etc-hosts /etc/hosts"
+    nimbus.vm.provision "shell", inline: "apt-get update"
     nimbus.vm.provision "shell", path: "install-storm.sh", args: STORM_VERSION
-    
     nimbus.vm.provision "shell", path: "config-supervisord.sh", args: "nimbus"
-    
     nimbus.vm.provision "shell", path: "config-supervisord.sh", args: "ui"
-    
     nimbus.vm.provision "shell", path: "config-supervisord.sh", args: "drpc"
-    
     nimbus.vm.provision "shell", path: "start-supervisord.sh"
+
   end
 
-  config.vm.define "supervisor1" do |supervisor|
-    supervisor.vm.box = "precise32"
-    supervisor.vm.network "private_network", ip: "192.168.50.5"
-    supervisor.vm.hostname = "supervisor1"
-    
-    supervisor.vm.provision "shell", path: "install-storm.sh", args: STORM_VERSION
-    
-    supervisor.vm.provision "shell", path: "config-supervisord.sh", args: "supervisor"
-    
-    supervisor.vm.provision "shell", path: "config-supervisord.sh", args: "logviewer"
-    
-    supervisor.vm.provision "shell", path: "start-supervisord.sh"
-    
+  (1..STORM_SUPERVISOR_COUNT).each do |n|
+    config.vm.define "supervisor#{n}" do |supervisor|
+      supervisor.vm.provider "virtualbox" do |v|
+        v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+      end
+      supervisor.vm.network "private_network", ip: "192.168.50.#{4 + n}"
+      supervisor.vm.hostname = "supervisor#{n}"
+      supervisor.vm.provision :shell, :inline => "sudo ln -fs /vagrant/etc-hosts /etc/hosts"
+      supervisor.vm.provision "shell", inline: "apt-get update"
+      supervisor.vm.provision "shell", path: "install-storm.sh", args: STORM_VERSION
+      supervisor.vm.provision "shell", path: "config-supervisord.sh", args: "supervisor"
+      supervisor.vm.provision "shell", path: "config-supervisord.sh", args: "logviewer"
+      supervisor.vm.provision "shell", path: "start-supervisord.sh"
+    end
   end
-  
-  config.vm.define "supervisor2" do |supervisor|
-    supervisor.vm.box = "precise32"
-    supervisor.vm.network "private_network", ip: "192.168.50.6"
-    supervisor.vm.hostname = "supervisor2"
-    
-    supervisor.vm.provision "shell", path: "install-storm.sh", args: STORM_VERSION
-    
-    supervisor.vm.provision "shell", path: "config-supervisord.sh", args: "supervisor"
-    
-    supervisor.vm.provision "shell", path: "config-supervisord.sh", args: "logviewer"
-    
-    supervisor.vm.provision "shell", path: "start-supervisord.sh"
-    
-  end
-  
+
 
   # All Vagrant configuration is done here. The most common configuration
   # options are documented and commented below. For a complete reference,
