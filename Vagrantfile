@@ -8,14 +8,15 @@ require 'uri'
 # if the file is not already in the same directory as the Vagrantfile.
 # to supply a custom build, drop it next to the Vagrantfile and make sure the file name
 # matches the file in the URL.
-STORM_DIST_URL = "https://people.apache.org/~ptgoetz/storm/security/apache-storm-0.9.3-incubating-SNAPSHOT.zip"
+STORM_DIST_URL = "https://people.apache.org/~ptgoetz/storm/security/apache-storm-0.9.3.2.2.0.0-626.tar.gz"
 
 STORM_SUPERVISOR_COUNT = 2
 STORM_BOX_TYPE = "hashicorp/precise64"
 # end Configuration
 
 STORM_ARCHIVE = File.basename(URI.parse(STORM_DIST_URL).path)
-STORM_VERSION = File.basename(STORM_ARCHIVE, '.*')
+
+STORM_VERSION = File.basename(STORM_ARCHIVE, '.tar.gz')
 
 # Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
 VAGRANTFILE_API_VERSION = "2"
