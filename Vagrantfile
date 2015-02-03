@@ -8,8 +8,8 @@ require 'uri'
 # if the file is not already in the same directory as the Vagrantfile.
 # to supply a custom build, drop it next to the Vagrantfile and make sure the file name
 # matches the file in the URL.
-STORM_DIST_URL = "https://people.apache.org/~ptgoetz/storm/security/apache-storm-0.9.3-incubating-SNAPSHOT.zip"
-
+STORM_DIST_URL = "https://people.apache.org/~ptgoetz/storm/security/apache-storm-0.10.0-SNAPSHOT.zip"
+STORM_NIMBUS_COUNT = 2
 STORM_SUPERVISOR_COUNT = 2
 STORM_BOX_TYPE = "hashicorp/precise64"
 # end Configuration
@@ -40,21 +40,25 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     end
   end
 
-  config.vm.define "nimbus" do |node|
-    ip = "192.168.202.4"
-    node.vm.network "private_network", ip: ip
-    node.vm.hostname = "nimbus"
-    node.vm.provision "shell", inline: "apt-get update"
-    node.vm.provision "shell", path: "install-storm.sh", args: [STORM_VERSION, "localhost", "nimbus.witzend.com", "nimbus"]
-    node.vm.provision "shell", path: "config-supervisord.sh", args: "nimbus"
-    node.vm.provision "shell", path: "config-supervisord.sh", args: "ui"
-    node.vm.provision "shell", path: "config-supervisord.sh", args: "drpc"
-    node.vm.provision "shell", path: "start-supervisord.sh"
+(1..STORM_NIMBUS_COUNT).each do |n|
+    config.vm.define "nimbus#{n}" do |node|
+      ip = "192.168.202.#{3 + n}"
+      node.vm.network "private_network", ip: ip
+      node.vm.hostname = "nimbus#{n}"
+      node.vm.provision "shell", inline: "apt-get update"
+      node.vm.provision "shell", path: "install-storm.sh", args: [STORM_VERSION, "localhost", "nimbus#{n}.witzend.com", "nimbus#{n}"]
+      node.vm.provision "shell", path: "config-supervisord.sh", args: "nimbus"
+      if (n == 1)
+        node.vm.provision "shell", path: "config-supervisord.sh", args: "ui"
+      end
+      node.vm.provision "shell", path: "config-supervisord.sh", args: "drpc"
+      node.vm.provision "shell", path: "start-supervisord.sh"
+    end
   end
 
   (1..STORM_SUPERVISOR_COUNT).each do |n|
     config.vm.define "supervisor#{n}" do |node|
-      ip = "192.168.202.#{4 + n}"
+      ip = "192.168.202.#{5 + n}"
       node.vm.network "private_network", ip: ip
       node.vm.hostname = "supervisor#{n}"
       node.vm.provision "shell", inline: "apt-get update"

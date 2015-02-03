@@ -11,7 +11,7 @@ drpc.servers:
 #topology.storm.user: "storm"
 nimbus.authorizer: "backtype.storm.security.auth.authorizer.SimpleACLAuthorizer"
 storm.thrift.transport: "backtype.storm.security.auth.kerberos.KerberosSaslTransportPlugin"
-java.security.auth.login.config: "/vagrant/storm_jaas.conf"
+java.security.auth.login.config: "/vagrant/storm1_jaas.conf"
 storm.principal.tolocal: "backtype.storm.security.auth.KerberosPrincipalToLocal"
 storm.zookeeper.superACL: "sasl:storm"
 
@@ -20,9 +20,9 @@ nimbus.admins:
 nimbus.supervisor.users:
   - "storm"
 
-nimbus.childopts: "-Xmx1024m -Djavax.net.debug=ssl -Dsun.security.krb5.debug=true -Djava.security.auth.login.config=/vagrant/storm_jaas.conf -Djava.security.krb5.realm=WITZEND.COM -Djava.security.krb5.kdc=kdc.witzend.com"
-ui.childopts: "-Xmx768m -Djavax.net.debug=ssl -Dsun.security.krb5.debug=true -Djava.security.auth.login.config=/vagrant/storm_jaas.conf -Djava.security.krb5.realm=WITZEND.COM -Djava.security.krb5.kdc=kdc.witzend.com"
-supervisor.childopts: "-Xmx256m -Djavax.net.debug=ssl -Dsun.security.krb5.debug=true -Djava.security.auth.login.config=/vagrant/storm_jaas.conf -Djava.security.krb5.realm=WITZEND.COM -Djava.security.krb5.kdc=kdc.witzend.com"
+nimbus.childopts: "-Xmx1024m -Djavax.net.debug=ssl -Dsun.security.krb5.debug=true -Djava.security.auth.login.config=/vagrant/storm1_jaas.conf -Djava.security.krb5.realm=WITZEND.COM -Djava.security.krb5.kdc=kdc.witzend.com"
+ui.childopts: "-Xmx768m -Djavax.net.debug=ssl -Dsun.security.krb5.debug=true -Djava.security.auth.login.config=/vagrant/storm1_jaas.conf -Djava.security.krb5.realm=WITZEND.COM -Djava.security.krb5.kdc=kdc.witzend.com"
+supervisor.childopts: "-Xmx256m -Djavax.net.debug=ssl -Dsun.security.krb5.debug=true -Djava.security.auth.login.config=/vagrant/storm1_jaas.conf -Djava.security.krb5.realm=WITZEND.COM -Djava.security.krb5.kdc=kdc.witzend.com"
 
 ui.filter: "org.apache.hadoop.security.authentication.server.AuthenticationFilter"
 ui.filter.params:

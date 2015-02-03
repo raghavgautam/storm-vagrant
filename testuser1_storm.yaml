@@ -2,7 +2,7 @@ nimbus.thrift.max_buffer_size: 5000000
 storm.zookeeper.servers:
     - "zookeeper"
 
-nimbus.host: "nimbus"
+#nimbus.host: "nimbus"
 
 drpc.servers:
   - "nimbus"

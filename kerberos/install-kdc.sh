@@ -15,12 +15,15 @@ sh /vagrant/kerberos/new_realm.sh
 # Zookeeper (Will need one of these for each box in teh Zk ensamble)
 sudo /usr/sbin/kadmin.local -q 'addprinc -randkey zookeeper/zookeeper.witzend.com@WITZEND.COM'
 sudo /usr/sbin/kadmin.local -q "ktadd -k /tmp/zk.keytab  zookeeper/zookeeper.witzend.com@WITZEND.COM"
-# Nimbus
-sudo /usr/sbin/kadmin.local -q 'addprinc -randkey nimbus/nimbus.witzend.com@WITZEND.COM'
-sudo /usr/sbin/kadmin.local -q "ktadd -k /tmp/storm.keytab nimbus/nimbus.witzend.com@WITZEND.COM"
+# Nimbus 1
+sudo /usr/sbin/kadmin.local -q 'addprinc -randkey nimbus/nimbus1.witzend.com@WITZEND.COM'
+sudo /usr/sbin/kadmin.local -q "ktadd -k /tmp/storm.keytab nimbus/nimbus1.witzend.com@WITZEND.COM"
+# Nimbus 2
+sudo /usr/sbin/kadmin.local -q 'addprinc -randkey nimbus/nimbus2.witzend.com@WITZEND.COM'
+sudo /usr/sbin/kadmin.local -q "ktadd -k /tmp/storm.keytab nimbus/nimbus2.witzend.com@WITZEND.COM"
 # UI
-sudo /usr/sbin/kadmin.local -q 'addprinc -randkey HTTP/nimbus.witzend.com@WITZEND.COM'
-sudo /usr/sbin/kadmin.local -q "ktadd -k /tmp/http.keytab HTTP/nimbus.witzend.com@WITZEND.COM"
+sudo /usr/sbin/kadmin.local -q 'addprinc -randkey HTTP/nimbus1.witzend.com@WITZEND.COM'
+sudo /usr/sbin/kadmin.local -q "ktadd -k /tmp/http.keytab HTTP/nimbus1.witzend.com@WITZEND.COM"
 
 # All UI and Supervisors
 sudo /usr/sbin/kadmin.local -q 'addprinc -pw storm storm@WITZEND.COM'
@@ -28,11 +31,11 @@ sudo /usr/sbin/kadmin.local -q 'change_password -pw storm storm@WITZEND.COM'
 sudo /usr/sbin/kadmin.local -q "ktadd -k /tmp/storm.keytab storm@WITZEND.COM"
 
 # user to submit topologies
-sudo /usr/sbin/kadmin.local -q 'addprinc -randkey testuser1/nimbus.witzend.com@WITZEND.COM'
-sudo /usr/sbin/kadmin.local -q "ktadd -k /tmp/testuser1.keytab testuser1/nimbus.witzend.com@WITZEND.COM"
+sudo /usr/sbin/kadmin.local -q 'addprinc -randkey testuser1/nimbus1.witzend.com@WITZEND.COM'
+sudo /usr/sbin/kadmin.local -q "ktadd -k /tmp/testuser1.keytab testuser1/nimbus1.witzend.com@WITZEND.COM"
 
-sudo /usr/sbin/kadmin.local -q 'addprinc -randkey testuser2/nimbus.witzend.com@WITZEND.COM'
-sudo /usr/sbin/kadmin.local -q "ktadd -k /tmp/testuser2.keytab testuser2/nimbus.witzend.com@WITZEND.COM"
+sudo /usr/sbin/kadmin.local -q 'addprinc -randkey testuser2/nimbus1.witzend.com@WITZEND.COM'
+sudo /usr/sbin/kadmin.local -q "ktadd -k /tmp/testuser2.keytab testuser2/nimbus1.witzend.com@WITZEND.COM"
 
 mkdir /vagrant/keytabs
 cp /tmp/storm.keytab /vagrant/keytabs/
