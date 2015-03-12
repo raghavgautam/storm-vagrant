@@ -4,7 +4,7 @@ require 'uri'
 # Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
 VAGRANTFILE_API_VERSION = "2"
 STORM_BOX_TYPE = "hashicorp/precise64"
-STORM_DIST_URL = "http://apache.cs.utah.edu/incubator/storm/apache-storm-0.9.2-incubating/apache-storm-0.9.3-incubating-SNAPSHOT.zip"
+STORM_DIST_URL = "http://apache.cs.utah.edu/incubator/storm/apache-storm-0.9.2-incubating/apache-storm-0.10.0-SNAPSHOT.zip"
 STORM_ARCHIVE = File.basename(URI.parse(STORM_DIST_URL).path)
 STORM_VERSION = File.basename(STORM_ARCHIVE, '.*')
 STORM_SUPERVISOR_COUNT = 2
