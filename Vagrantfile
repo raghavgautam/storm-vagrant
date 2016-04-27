@@ -27,7 +27,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     zookeeper.vm.network "private_network", ip: "192.168.50.3"
     zookeeper.vm.provision :shell, :inline => "sudo ln -fs /vagrant/etc-hosts /etc/hosts"
     zookeeper.vm.hostname = "zookeeper"
-    zookeeper.vm.provision "shell", inline: "apt-get update"
+    zookeeper.vm.provision "shell", path: "common.sh"
     zookeeper.vm.provision "shell", path: "install-zookeeper.sh"
 
   end
@@ -39,7 +39,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     nimbus.vm.network "private_network", ip: "192.168.50.4"
     nimbus.vm.hostname = "nimbus"
     nimbus.vm.provision :shell, :inline => "sudo ln -fs /vagrant/etc-hosts /etc/hosts"
-    nimbus.vm.provision "shell", inline: "apt-get update"
+    nimbus.vm.provision "shell", path: "common.sh"
     nimbus.vm.provision "shell", path: "install-storm.sh", args: STORM_VERSION
     nimbus.vm.provision "shell", path: "config-supervisord.sh", args: "nimbus"
     nimbus.vm.provision "shell", path: "config-supervisord.sh", args: "ui"
@@ -56,7 +56,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       supervisor.vm.network "private_network", ip: "192.168.50.#{4 + n}"
       supervisor.vm.hostname = "supervisor#{n}"
       supervisor.vm.provision :shell, :inline => "sudo ln -fs /vagrant/etc-hosts /etc/hosts"
-      supervisor.vm.provision "shell", inline: "apt-get update"
+      supervisor.vm.provision "shell", path: "common.sh"
       supervisor.vm.provision "shell", path: "install-storm.sh", args: STORM_VERSION
       supervisor.vm.provision "shell", path: "config-supervisord.sh", args: "supervisor"
       supervisor.vm.provision "shell", path: "config-supervisord.sh", args: "logviewer"
