@@ -1,3 +1,5 @@
 *~
 *.zip
+*.jar
 .vagrant
+/user-script.sh
